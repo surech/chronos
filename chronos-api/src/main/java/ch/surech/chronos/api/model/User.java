@@ -5,9 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class Invitee {
-
+public class User {
+    private String name;
     private String email;
-
-    private boolean optional = false;
 }
