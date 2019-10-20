@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+
+    <changeSet id="1" author="surech">
+        <createTable tableName="chronos_user">
+            <column name="ID" type="BIGINT" autoIncrement="true" remarks="Technischer Primärschlüssel">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(200)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="email" type="VARCHAR(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_precente_preference">
+            <column name="ID" type="BIGINT" autoIncrement="true" remarks="Technischer Primärschlüssel">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="from" type="DATETIME">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="to" type="DATETIME">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="preference_type" type="VARCHAR(100)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+
+            <column name="chronos_user_fk" type="BIGINT">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_precente_preference" baseColumnNames="chronos_user_fk"
+                                 constraintName="precence_preference_user_fk"
+                                 referencedTableName="chronos_user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2" author="surech">
+        <modifyDataType tableName="user_precente_preference" columnName="from" newDataType="TIME"/>
+        <modifyDataType tableName="user_precente_preference" columnName="to" newDataType="TIME"/>
+    </changeSet>
+
+    <changeSet id="3" author="surech">
+        <renameColumn tableName="user_precente_preference" oldColumnName="from" newColumnName="start" columnDataType="TIME"/>
+        <renameColumn tableName="user_precente_preference" oldColumnName="to" newColumnName="end" columnDataType="TIME"/>
+    </changeSet>
+
+</databaseChangeLog>

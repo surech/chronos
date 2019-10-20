@@ -6,13 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="chronos-api" />
         <module name="chronos-server" />
         <module name="chronosapi" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="chronos-api" target="1.8" />
+      <module name="chronos-parent" target="1.8" />
+      <module name="chronos-server" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="chronos-api" options="-parameters" />
       <module name="chronos-server" options="-parameters" />
       <module name="chronosapi" options="-parameters" />
     </option>

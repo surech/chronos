@@ -1,7 +1,9 @@
 package ch.surech.chronos.api.model;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -10,8 +12,11 @@ import java.time.ZonedDateTime;
 public class UserPrecentePreference {
     private long id;
 
-    private ZonedDateTime from;
-    private ZonedDateTime to;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime from;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime to;
 
     private PrecentePreferenceType preference;
 }

@@ -1,6 +1,10 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306
-    username: root
-    password: secret
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
 
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
