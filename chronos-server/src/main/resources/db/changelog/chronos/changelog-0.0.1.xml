@@ -53,4 +53,21 @@
         <renameColumn tableName="user_precente_preference" oldColumnName="to" newColumnName="end" columnDataType="TIME"/>
     </changeSet>
 
+    <changeSet id="4" author="surech">
+        <addColumn tableName="user_precente_preference">
+            <column name="working_days" type="VARCHAR(100)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="5" author="surech">
+        <addColumn tableName="chronos_user">
+            <column name="working_days" type="VARCHAR(100)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="user_precente_preference" columnName="working_days"/>
+    </changeSet>
+
 </databaseChangeLog>

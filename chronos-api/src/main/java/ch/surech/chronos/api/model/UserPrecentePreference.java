@@ -5,6 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.EnumSet;
+import java.util.List;
 
 @Getter
 @Setter

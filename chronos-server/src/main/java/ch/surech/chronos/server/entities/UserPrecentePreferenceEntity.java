@@ -1,6 +1,8 @@
 package ch.surech.chronos.server.entities;
 
 import ch.surech.chronos.api.model.PrecentePreferenceType;
+import ch.surech.chronos.api.model.Weekdays;
+import ch.surech.chronos.server.utils.WeekdayConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.util.EnumSet;
 
 @Entity
 @Builder

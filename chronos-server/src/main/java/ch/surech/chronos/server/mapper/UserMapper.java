@@ -11,6 +11,7 @@ public class UserMapper {
         UserEntity.UserEntityBuilder builder = UserEntity.builder();
         builder.name(user.getName());
         builder.email(user.getEmail());
+        builder.workingDays(user.getWorkingDays());
 
         return builder.build();
     }
@@ -19,6 +20,7 @@ public class UserMapper {
         User.UserBuilder builder = User.builder();
         builder.name(entity.getName());
         builder.email(entity.getEmail());
+        builder.workingDays(entity.getWorkingDays());
 
         return builder.build();
     }

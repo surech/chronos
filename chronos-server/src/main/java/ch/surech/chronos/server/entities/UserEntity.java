@@ -1,11 +1,11 @@
 package ch.surech.chronos.server.entities;
 
+import ch.surech.chronos.api.model.Weekdays;
+import ch.surech.chronos.server.utils.WeekdayConverter;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.EnumSet;
 import java.util.List;
 
 @Entity
@@ -26,4 +26,8 @@ public class UserEntity extends BaseEntity {
     @OneToMany(mappedBy = "user")
     @Singular
     private List<UserPrecentePreferenceEntity> precentePreferences;
+
+    @Column(name = "working_days")
+    @Convert(converter = WeekdayConverter.class)
+    private EnumSet<Weekdays> workingDays;
 }
