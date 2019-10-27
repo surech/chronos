@@ -5,8 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Invitee {
 
     private String email;
