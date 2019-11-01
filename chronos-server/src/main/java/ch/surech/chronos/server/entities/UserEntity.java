@@ -3,10 +3,13 @@ package ch.surech.chronos.server.entities;
 import ch.surech.chronos.api.model.Weekdays;
 import ch.surech.chronos.server.utils.WeekdayConverter;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -14,6 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "email", callSuper = false)
 @Table(name = "chronos_user")
 public class UserEntity extends BaseEntity {
 
