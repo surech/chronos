@@ -3,6 +3,7 @@ package ch.surech.chronos.server.service;
 import ch.surech.chronos.api.model.Invitee;
 import ch.surech.chronos.api.model.MeetingRequest;
 import ch.surech.chronos.api.model.PrecentePreferenceType;
+import ch.surech.chronos.api.model.Weekdays;
 import ch.surech.chronos.server.entities.EventEntity;
 import ch.surech.chronos.server.entities.UserEntity;
 import ch.surech.chronos.server.entities.UserPrecentePreferenceEntity;
@@ -15,10 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,11 +74,14 @@ public class FindMeetingService {
         // Check user preference
         PrecentePreferenceType precentePreference = getPrecentePreference(attendee.getPrecentePreferences(), time.toLocalTime(), duration);
 
+        // Check working-days
+        boolean isWorkday = isWorkday(attendee.getUser().getWorkingDays(), time, duration);
+
         // Check if we already have meetings in this timeslot
         boolean hasMeeting = hasMeeting(attendee.getEvents(), time, timeslot);
 
         // Map results to Availabilty
-        if(precentePreference == PrecentePreferenceType.NoWork){
+        if(precentePreference == PrecentePreferenceType.NoWork || !isWorkday){
             return Availability.NotAvailable;
         } else if(hasMeeting){
             return Availability.Booked;
@@ -88,6 +95,15 @@ public class FindMeetingService {
             // No path should lead us here
             throw new IllegalStateException("No path should lead us here...");
         }
+    }
+
+    @VisibleForTesting
+    protected boolean isWorkday(EnumSet<Weekdays> workingDays, LocalDateTime time, int duration) {
+        DayOfWeek startDay = time.getDayOfWeek();
+        DayOfWeek endDay = time.plusMinutes(duration).getDayOfWeek();
+
+        Set<DayOfWeek> wd = workingDays.stream().map(Weekdays::getDayOfWeek).collect(Collectors.toSet());
+        return wd.contains(startDay) && wd.contains(endDay);
     }
 
     @VisibleForTesting

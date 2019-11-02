@@ -1,7 +1,9 @@
 package ch.surech.chronos.server.service;
 
 import ch.surech.chronos.api.model.PrecentePreferenceType;
+import ch.surech.chronos.api.model.Weekdays;
 import ch.surech.chronos.server.entities.EventEntity;
+import ch.surech.chronos.server.entities.UserEntity;
 import ch.surech.chronos.server.entities.UserPrecentePreferenceEntity;
 import ch.surech.chronos.server.model.Availability;
 import ch.surech.chronos.server.model.MeetingAttendee;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 class FindMeetingServiceTest {
@@ -171,29 +174,58 @@ class FindMeetingServiceTest {
                 .preference(PrecentePreferenceType.NoWork)
                 .build());
 
+        // Base-Date is a Wednesday
+        LocalDate baseDate = LocalDate.of(2019, 11, 6);
+        Assertions.assertEquals(DayOfWeek.WEDNESDAY, baseDate.getDayOfWeek());
+
         // Create Events
         List<EventEntity> events = new ArrayList<>();
-        LocalDate date = LocalDate.of(2019, 3, 8);
-        Assertions.assertFalse(sut.hasMeeting(events, LocalDateTime.of(date, LocalTime.of(12, 0)), 15));
+        Assertions.assertFalse(sut.hasMeeting(events, LocalDateTime.of(baseDate, LocalTime.of(12, 0)), 15));
 
-        events.add(EventEntity.builder().start(buildZDT(date, -1, 9, 0)).end(buildZDT(date, -1, 10, 0)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, -1, 11, 0)).end(buildZDT(date, -1, 12, 0)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, 0, 8, 45)).end(buildZDT(date, 0, 9, 0)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, 0, 8, 30)).end(buildZDT(date, 0, 10, 0)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, 0, 13, 30)).end(buildZDT(date, 0, 15, 0)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, 1, 10, 0)).end(buildZDT(date, 1, 11, 30)).build());
-        events.add(EventEntity.builder().start(buildZDT(date, 1, 14, 0)).end(buildZDT(date, 1, 15, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, -1, 9, 0)).end(buildZDT(baseDate, -1, 10, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, -1, 11, 0)).end(buildZDT(baseDate, -1, 12, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, 0, 8, 45)).end(buildZDT(baseDate, 0, 9, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, 0, 8, 30)).end(buildZDT(baseDate, 0, 10, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, 0, 13, 30)).end(buildZDT(baseDate, 0, 15, 0)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, 1, 10, 0)).end(buildZDT(baseDate, 1, 11, 30)).build());
+        events.add(EventEntity.builder().start(buildZDT(baseDate, 1, 14, 0)).end(buildZDT(baseDate, 1, 15, 0)).build());
+
+        // Create User with working-days (80%)
+        EnumSet<Weekdays> workingDays = EnumSet.of(Weekdays.Monday, Weekdays.Tuesday, Weekdays.Wednesday, Weekdays.Thursday);
+        UserEntity user = UserEntity.builder().workingDays(workingDays).build();
 
         // Now Build an attendee
-        MeetingAttendee attendee = MeetingAttendee.builder().precentePreferences(preferences).events(events).build();
+        MeetingAttendee attendee = MeetingAttendee.builder().precentePreferences(preferences).events(events).user(user).build();
 
         // Let's run some tests
-        Assertions.assertEquals(Availability.Available, sut.getAvailability(attendee, buildLDT(date, 0, 15, 0), 15));
-        Assertions.assertEquals(Availability.Available, sut.getAvailability(attendee, buildLDT(date, 0, 15, 15), 15));
-        Assertions.assertEquals(Availability.Booked, sut.getAvailability(attendee, buildLDT(date, -1, 9, 0), 15));
-        Assertions.assertEquals(Availability.Booked, sut.getAvailability(attendee, buildLDT(date, -1, 9, 15), 15));
-        Assertions.assertEquals(Availability.NotAvailable, sut.getAvailability(attendee, buildLDT(date, 1, 19, 0), 15));
-        Assertions.assertEquals(Availability.Prefered, sut.getAvailability(attendee, buildLDT(date, 1, 9, 0), 15));
-        Assertions.assertEquals(Availability.RatherNot, sut.getAvailability(attendee, buildLDT(date, 0, 12, 0), 15));
+        Assertions.assertEquals(Availability.Available, sut.getAvailability(attendee, buildLDT(baseDate, 0, 15, 0), 15));
+        Assertions.assertEquals(Availability.Available, sut.getAvailability(attendee, buildLDT(baseDate, 0, 15, 15), 15));
+        Assertions.assertEquals(Availability.Booked, sut.getAvailability(attendee, buildLDT(baseDate, -1, 9, 0), 15));
+        Assertions.assertEquals(Availability.Booked, sut.getAvailability(attendee, buildLDT(baseDate, -1, 9, 15), 15));
+        Assertions.assertEquals(Availability.NotAvailable, sut.getAvailability(attendee, buildLDT(baseDate, 1, 19, 0), 15));
+        Assertions.assertEquals(Availability.Prefered, sut.getAvailability(attendee, buildLDT(baseDate, 1, 9, 0), 15));
+        Assertions.assertEquals(Availability.RatherNot, sut.getAvailability(attendee, buildLDT(baseDate, 0, 12, 0), 15));
+
+        // Weekend
+        Assertions.assertEquals(Availability.NotAvailable, sut.getAvailability(attendee, buildLDT(baseDate, 3, 15, 0), 15));
+    }
+
+    @Test
+    void isWorkday() {
+        // Create Working-Days (80%)
+        EnumSet<Weekdays> workingDays = EnumSet.of(Weekdays.Monday, Weekdays.Tuesday, Weekdays.Thursday, Weekdays.Friday);
+
+        // This Base-Date is a Monday
+        LocalDate base = LocalDate.of(2019, 11, 4);
+        Assertions.assertEquals(DayOfWeek.MONDAY, base.getDayOfWeek());
+
+        // Run some tests
+        Assertions.assertTrue(sut.isWorkday(workingDays, buildLDT(base, 0, 12, 0), 15));
+        Assertions.assertTrue(sut.isWorkday(workingDays, buildLDT(base, 1, 12, 0), 15));
+        Assertions.assertFalse(sut.isWorkday(workingDays, buildLDT(base, 2, 12, 0), 15));
+        Assertions.assertTrue(sut.isWorkday(workingDays, buildLDT(base, 3, 12, 0), 15));
+        Assertions.assertTrue(sut.isWorkday(workingDays, buildLDT(base, 4, 12, 0), 15));
+        Assertions.assertFalse(sut.isWorkday(workingDays, buildLDT(base, 5, 12, 0), 15));
+        Assertions.assertFalse(sut.isWorkday(workingDays, buildLDT(base, 6, 12, 0), 15));
     }
 }
