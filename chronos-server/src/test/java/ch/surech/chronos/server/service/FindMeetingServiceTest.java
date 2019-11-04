@@ -6,15 +6,17 @@ import ch.surech.chronos.server.entities.EventEntity;
 import ch.surech.chronos.server.entities.UserEntity;
 import ch.surech.chronos.server.entities.UserPrecentePreferenceEntity;
 import ch.surech.chronos.server.model.Availability;
+import ch.surech.chronos.server.model.CollectedAvailability;
+import ch.surech.chronos.server.model.EventProposal;
 import ch.surech.chronos.server.model.MeetingAttendee;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class FindMeetingServiceTest {
 
@@ -227,5 +229,70 @@ class FindMeetingServiceTest {
         Assertions.assertTrue(sut.isWorkday(workingDays, buildLDT(base, 4, 12, 0), 15));
         Assertions.assertFalse(sut.isWorkday(workingDays, buildLDT(base, 5, 12, 0), 15));
         Assertions.assertFalse(sut.isWorkday(workingDays, buildLDT(base, 6, 12, 0), 15));
+    }
+
+    @Test
+    @Disabled
+    void collectAvailabilities() {
+        LocalDateTime startRange = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
+        LocalDateTime endRange = startRange.plusDays(1);
+
+        sut.collectAvailabilities(List.of(), startRange, endRange, 60, 15);
+    }
+
+    @Test
+    void getMostRestrictiveAvailability() {
+        List<Availability> availabilities = new ArrayList<>();
+        availabilities.add(Availability.Available);
+        Assertions.assertEquals(Availability.Available, sut.getMostRestrictiveAvailability(availabilities));
+
+        availabilities.add(Availability.Prefered);
+        Assertions.assertEquals(Availability.Available, sut.getMostRestrictiveAvailability(availabilities));
+
+        availabilities.add(Availability.RatherNot);
+        availabilities.add(Availability.RatherNot);
+        Assertions.assertEquals(Availability.RatherNot, sut.getMostRestrictiveAvailability(availabilities));
+
+        availabilities.add(Availability.Booked);
+        Assertions.assertEquals(Availability.Booked, sut.getMostRestrictiveAvailability(availabilities));
+
+        availabilities.add(Availability.NotAvailable);
+        availabilities.add(Availability.NotAvailable);
+        Assertions.assertEquals(Availability.NotAvailable, sut.getMostRestrictiveAvailability(availabilities));
+    }
+
+    @Test
+    void collectAvailability() {
+        List<Availability> availabilities = createList(Availability.Available, Availability.Available, Availability.RatherNot, Availability.Booked, Availability.Booked);
+        CollectedAvailability result = sut.collectAvailability(availabilities);
+        Assertions.assertEquals(Availability.Booked, result.getAvailability());
+        Assertions.assertEquals(2, result.getCount());
+
+        availabilities = createList(Availability.Available, Availability.Available, Availability.Prefered, Availability.Prefered, Availability.Prefered);
+        result = sut.collectAvailability(availabilities);
+        Assertions.assertEquals(Availability.Prefered, result.getAvailability());
+        Assertions.assertEquals(3, result.getCount());
+
+        availabilities = createList(Availability.Available, Availability.Available);
+        result = sut.collectAvailability(availabilities);
+        Assertions.assertEquals(Availability.Prefered, result.getAvailability());
+        Assertions.assertEquals(0, result.getCount());
+    }
+
+    private <T> List<T> createList(T ... items){
+        return Arrays.stream(items).collect(Collectors.toList());
+    }
+
+    @Test
+    void mergeAvailabilities() {
+        List<CollectedAvailability> collectedAvailabilities = new ArrayList<>();
+        collectedAvailabilities.add(new CollectedAvailability(Availability.Prefered, 2));
+        collectedAvailabilities.add(new CollectedAvailability(Availability.Booked, 3));
+        collectedAvailabilities.add(new CollectedAvailability(Availability.Booked, 1));
+        EventProposal result = sut.mergeAvailabilities(collectedAvailabilities, LocalDateTime.now(), 15);
+        Assertions.assertEquals(Availability.Booked, result.getAvailability());
+        Assertions.assertEquals(4, result.getCount());
+        Assertions.assertEquals(15, result.getDuration());
+
     }
 }

@@ -7,11 +7,12 @@ import ch.surech.chronos.api.model.Weekdays;
 import ch.surech.chronos.server.entities.EventEntity;
 import ch.surech.chronos.server.entities.UserEntity;
 import ch.surech.chronos.server.entities.UserPrecentePreferenceEntity;
-import ch.surech.chronos.server.model.Availability;
-import ch.surech.chronos.server.model.MeetingAttendee;
+import ch.surech.chronos.server.model.*;
 import ch.surech.chronos.server.repo.UserPrecentePreferenceRepository;
 import ch.surech.chronos.server.repo.UserRepository;
 import com.google.common.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,13 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class FindMeetingService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FindMeetingService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -40,8 +40,85 @@ public class FindMeetingService {
     @Value("${chronos.timeslot}")
     private int timeslot;
 
-    public void search(MeetingRequest meetingRequest) {
+    public EventEntity search(MeetingRequest meetingRequest) {
         List<MeetingAttendee> attendees = loadAttendees(meetingRequest);
+
+        SortedSet<EventProposal> availabilities = collectAvailabilities(attendees, meetingRequest.getStartRange().toLocalDateTime(), meetingRequest.getEndRange().toLocalDateTime(), meetingRequest.getDurationInMinutes(), timeslot);
+
+        EventProposal availability = availabilities.first();
+        if (availability.getAvailability().isBookable()) {
+            EventEntity event = createEvent(meetingRequest, availability);
+            return event;
+        } else {
+            throw new IllegalStateException("No free Meeting-Places found");
+        }
+    }
+
+    private EventEntity createEvent(MeetingRequest meetingRequest, CollectedAvailability availability) {
+        EventEntity.EventEntityBuilder builder = EventEntity.builder();
+        return null;
+    }
+
+    @VisibleForTesting
+    protected SortedSet<EventProposal> collectAvailabilities(List<MeetingAttendee> attendees, LocalDateTime startRange, LocalDateTime endRange, int duration, int interval) {
+        SortedSet<EventProposal> result = new TreeSet<>(new EventProposalComparator());
+        for (LocalDateTime time = startRange; time.isBefore(endRange); time = time.plusMinutes(interval)) {
+            EventProposal proposal = collectAvailability(attendees, time, duration, interval);
+            result.add(proposal);
+        }
+
+        return result;
+    }
+
+    private EventProposal collectAvailability(List<MeetingAttendee> attendees, LocalDateTime time, int duration, int interval) {
+        // Check all time-slots
+        List<CollectedAvailability> allCollectedAvailabilities = new ArrayList<>();
+        for (LocalDateTime start = time; start.isBefore(time.plusMinutes(duration)); start = start.plusMinutes(interval)) {
+            // Get Availability for all Attendees
+            List<Availability> availabilities = new ArrayList<>(attendees.size());
+            for (MeetingAttendee attendee : attendees) {
+                Availability availability = getAvailability(attendee, start, interval);
+                availabilities.add(availability);
+            }
+
+            allCollectedAvailabilities.add(collectAvailability(availabilities));
+        }
+
+        return mergeAvailabilities(allCollectedAvailabilities, time, duration);
+    }
+
+    @VisibleForTesting
+    protected EventProposal mergeAvailabilities(List<CollectedAvailability> allCollectedAvailabilities, LocalDateTime time, int duration) {
+        // Find most restrictive
+        List<Availability> availabilities = allCollectedAvailabilities.stream().map(CollectedAvailability::getAvailability).collect(Collectors.toList());
+        Availability mostRestrictiveAvailability = getMostRestrictiveAvailability(availabilities);
+
+        // Sum this kind of availability
+        int count = allCollectedAvailabilities.stream()
+                .filter(a -> a.getAvailability() == mostRestrictiveAvailability)
+                .mapToInt(CollectedAvailability::getCount)
+                .sum();
+
+        return EventProposal.eventBuilder()
+                .availability(mostRestrictiveAvailability)
+                .count(count)
+                .start(time)
+                .duration(duration)
+                .build();
+    }
+
+    @VisibleForTesting
+    protected CollectedAvailability collectAvailability(List<Availability> availabilities) {
+        // Find most restrictive
+        Availability mostRestrictiveAvailability = getMostRestrictiveAvailability(availabilities);
+
+        // Count this kind of availability
+        final Availability countable = mostRestrictiveAvailability == Availability.Available
+                ? Availability.Prefered
+                : mostRestrictiveAvailability;
+
+        long count = availabilities.stream().filter(a -> a == countable).count();
+        return CollectedAvailability.builder().availability(countable).count((int) count).build();
     }
 
     private List<MeetingAttendee> loadAttendees(MeetingRequest request) {
@@ -81,13 +158,13 @@ public class FindMeetingService {
         boolean hasMeeting = hasMeeting(attendee.getEvents(), time, timeslot);
 
         // Map results to Availabilty
-        if(precentePreference == PrecentePreferenceType.NoWork || !isWorkday){
+        if (precentePreference == PrecentePreferenceType.NoWork || !isWorkday) {
             return Availability.NotAvailable;
-        } else if(hasMeeting){
+        } else if (hasMeeting) {
             return Availability.Booked;
-        } else if(precentePreference == PrecentePreferenceType.RatherNot){
+        } else if (precentePreference == PrecentePreferenceType.RatherNot) {
             return Availability.RatherNot;
-        } else if(precentePreference == PrecentePreferenceType.Available) {
+        } else if (precentePreference == PrecentePreferenceType.Available) {
             return Availability.Available;
         } else if (precentePreference == PrecentePreferenceType.Preferred) {
             return Availability.Prefered;
@@ -169,5 +246,11 @@ public class FindMeetingService {
 
         // When we're here, strange thinks happend...
         throw new IllegalArgumentException("Unknown Precente-Preference-Type");
+    }
+
+    @VisibleForTesting
+    protected Availability getMostRestrictiveAvailability(List<Availability> availabilities) {
+        availabilities.sort(new AvailabilityComparator());
+        return availabilities.get(0);
     }
 }
