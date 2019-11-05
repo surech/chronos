@@ -18,4 +18,8 @@ public class EventProposal extends CollectedAvailability {
         this.start = start;
         this.duration = duration;
     }
+
+    public LocalDateTime getEnd(){
+        return start.plusMinutes(duration);
+    }
 }

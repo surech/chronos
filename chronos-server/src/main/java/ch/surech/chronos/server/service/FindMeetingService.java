@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,9 +52,31 @@ public class FindMeetingService {
         }
     }
 
-    private EventEntity createEvent(MeetingRequest meetingRequest, CollectedAvailability availability) {
+    private EventEntity createEvent(MeetingRequest meetingRequest, EventProposal proposal) {
         EventEntity.EventEntityBuilder builder = EventEntity.builder();
-        return null;
+
+        // Get Organizer
+        UserEntity organizer = userRepository.findByEmail(meetingRequest.getOrganizer());
+
+        // Get Attendees
+        List<UserEntity> invitees = meetingRequest.getInvitees().stream()
+                .map(Invitee::getEmail)
+                .map(userRepository::findByEmail)
+                .collect(Collectors.toList());
+
+        // Create Event
+        builder.attendees(invitees);
+        builder.subject(meetingRequest.getSubject());
+        builder.bodyPreview(meetingRequest.getBody());
+        builder.organizer(organizer);
+        builder.createdAt(ZonedDateTime.now());
+        builder.start(ZonedDateTime.of(proposal.getStart(), ZoneId.systemDefault()));
+        builder.end(ZonedDateTime.of(proposal.getEnd(), ZoneId.systemDefault()));
+        EventEntity event = builder.build();
+
+        // Save event
+        EventEntity savedEvent = eventService.saveEvent(event);
+        return savedEvent;
     }
 
     @VisibleForTesting
