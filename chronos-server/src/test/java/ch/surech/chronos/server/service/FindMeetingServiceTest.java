@@ -232,15 +232,6 @@ class FindMeetingServiceTest {
     }
 
     @Test
-    @Disabled
-    void collectAvailabilities() {
-        LocalDateTime startRange = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
-        LocalDateTime endRange = startRange.plusDays(1);
-
-        sut.collectAvailabilities(List.of(), startRange, endRange, 60, 15);
-    }
-
-    @Test
     void getMostRestrictiveAvailability() {
         List<Availability> availabilities = new ArrayList<>();
         availabilities.add(Availability.Available);

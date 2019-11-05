@@ -1,5 +1,6 @@
 package ch.surech.chronos.server.mapper;
 
+import ch.surech.chronos.api.model.Invitee;
 import ch.surech.chronos.api.model.User;
 import ch.surech.chronos.server.entities.UserEntity;
 import org.springframework.stereotype.Component;
