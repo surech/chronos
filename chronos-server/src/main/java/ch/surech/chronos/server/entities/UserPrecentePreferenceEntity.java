@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.EnumSet;
 
 @Entity

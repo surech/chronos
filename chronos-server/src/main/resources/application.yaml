@@ -1,3 +1,6 @@
+chronos:
+  timeslot: 15
+
 logging:
   level:
     org:
