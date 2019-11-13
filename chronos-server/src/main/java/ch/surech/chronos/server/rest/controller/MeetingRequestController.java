@@ -37,7 +37,7 @@ public class MeetingRequestController {
         LocalDateTime start = LocalDateTime.now();
         EventEntity event = findMeetingService.search(meetingRequest);
         Duration duration = Duration.between(start, LocalDateTime.now());
-        LOGGER.info("Meeting found in {} ms", duration.get(ChronoUnit.MILLIS));
+        LOGGER.info("Meeting found in {} ms", duration.toMillis());
         return eventMapper.fromEntity(event);
     }
 }
