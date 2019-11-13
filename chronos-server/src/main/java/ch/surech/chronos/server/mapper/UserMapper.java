@@ -18,6 +18,10 @@ public class UserMapper {
     }
 
     public User fromEntity(UserEntity entity){
+        if(entity == null){
+            return null;
+        }
+
         User.UserBuilder builder = User.builder();
         builder.name(entity.getName());
         builder.email(entity.getEmail());

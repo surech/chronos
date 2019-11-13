@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,10 +27,13 @@ public class EventMapper {
         // Map users
         User organizer = userMapper.fromEntity(entity.getOrganizer());
         List<Invitee> invitees = entity.getAttendees().stream()
+                .filter(Objects::nonNull)
                 .map(a -> Invitee.builder().email(a.getEmail()).optional(false).build())
                 .collect(Collectors.toList());
 
-        builder.organizer(entity.getOrganizer().getEmail());
+        if(entity.getOrganizer() != null) {
+            builder.organizer(entity.getOrganizer().getEmail());
+        }
         builder.invitees(invitees);
 
         return builder.build();
