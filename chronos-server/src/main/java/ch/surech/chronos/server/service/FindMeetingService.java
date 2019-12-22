@@ -38,6 +38,14 @@ public class FindMeetingService {
     @Value("${chronos.timeslot}")
     private int timeslot;
 
+    /**
+     * Used Timeslot
+     * @return Timeslot in Minutes
+     */
+    public int getTimeslot() {
+        return timeslot;
+    }
+
     public EventEntity search(MeetingRequest meetingRequest) {
         List<MeetingAttendee> attendees = loadAttendees(meetingRequest);
 
@@ -81,30 +89,46 @@ public class FindMeetingService {
 
     @VisibleForTesting
     protected SortedSet<EventProposal> collectAvailabilities(List<MeetingAttendee> attendees, LocalDateTime startRange, LocalDateTime endRange, int duration, int interval) {
+        // Create Cache for speedup the search
+        Map<LocalDateTime, CollectedAvailability> cache = new HashMap<>();
+
         SortedSet<EventProposal> result = new TreeSet<>(new EventProposalComparator());
         for (LocalDateTime time = startRange; time.isBefore(endRange); time = time.plusMinutes(interval)) {
-            EventProposal proposal = collectAvailability(attendees, time, duration, interval);
+            LocalDateTime start = LocalDateTime.now();
+            EventProposal proposal = getEventProposal(attendees, time, duration, interval, cache);
+            Duration laufzeit = Duration.between(start, LocalDateTime.now());
+            LOGGER.info("Duration for one Slot: {} ms", laufzeit.toMillis());
             result.add(proposal);
         }
 
         return result;
     }
 
-    private EventProposal collectAvailability(List<MeetingAttendee> attendees, LocalDateTime time, int duration, int interval) {
+    private EventProposal getEventProposal(List<MeetingAttendee> attendees, LocalDateTime time, int duration, int interval, Map<LocalDateTime, CollectedAvailability> cache) {
         // Check all time-slots
         List<CollectedAvailability> allCollectedAvailabilities = new ArrayList<>();
         for (LocalDateTime start = time; start.isBefore(time.plusMinutes(duration)); start = start.plusMinutes(interval)) {
-            // Get Availability for all Attendees
-            List<Availability> availabilities = new ArrayList<>(attendees.size());
-            for (MeetingAttendee attendee : attendees) {
-                Availability availability = getAvailability(attendee, start, interval);
-                availabilities.add(availability);
+            // Check Cache
+            CollectedAvailability collectedAvailability = cache.get(start);
+            if(collectedAvailability == null){
+                // Get Availability for all Attendees
+                collectedAvailability = getAvailabilities(attendees, start, interval);
+                cache.put(start, collectedAvailability);
             }
 
-            allCollectedAvailabilities.add(collectAvailability(availabilities));
+            allCollectedAvailabilities.add(collectedAvailability);
         }
 
         return mergeAvailabilities(allCollectedAvailabilities, time, duration);
+    }
+
+    private CollectedAvailability getAvailabilities(List<MeetingAttendee> attendees, LocalDateTime start, int interval) {
+        List<Availability> availabilities = new ArrayList<>(attendees.size());
+        for (MeetingAttendee attendee : attendees) {
+            Availability availability = getAvailability(attendee, start, interval);
+            availabilities.add(availability);
+        }
+        return collectAvailability(availabilities);
     }
 
     @VisibleForTesting
@@ -143,13 +167,31 @@ public class FindMeetingService {
 
     private List<MeetingAttendee> loadAttendees(MeetingRequest request) {
         // Load all users
-        List<UserEntity> users = new ArrayList<>();
-        users.add(userRepository.findByEmail(request.getOrganizer()));
-        request.getInvitees().stream().map(Invitee::getEmail).map(userRepository::findByEmail).forEach(users::add);
+        Set<UserEntity> users = new HashSet<>();
+        UserEntity organizer = userRepository.findByEmail(request.getOrganizer());
+        if(organizer != null) {
+            users.add(organizer);
+        }
 
+        request.getInvitees().stream()
+                .map(Invitee::getEmail)
+                .map(userRepository::findByEmail)
+                .filter(Objects::nonNull)
+                .distinct()
+                .forEach(users::add);
+
+        return loadAttendees(users);
+    }
+
+    public List<MeetingAttendee> loadAttendees(Collection<UserEntity> users){
         List<MeetingAttendee> result = new ArrayList<>(users.size());
 
         for (UserEntity user : users) {
+            // Ignore empty users
+            if(user == null){
+                continue;
+            }
+
             // Load Preferences
             List<UserPrecentePreferenceEntity> preferences = userPrecentePreferenceRepository.findByEMail(user.getEmail());
 
@@ -166,8 +208,7 @@ public class FindMeetingService {
         return result;
     }
 
-    @VisibleForTesting
-    protected Availability getAvailability(MeetingAttendee attendee, LocalDateTime time, int duration) {
+    public Availability getAvailability(MeetingAttendee attendee, LocalDateTime time, int duration) {
         // Check user preference
         PrecentePreferenceType precentePreference = getPrecentePreference(attendee.getPrecentePreferences(), time.toLocalTime(), duration);
 
@@ -206,6 +247,11 @@ public class FindMeetingService {
     @VisibleForTesting
     protected boolean hasMeeting(List<EventEntity> events, LocalDateTime time, int duration) {
         return events.stream().anyMatch(e -> isInTimeslot(e.getStart().toLocalDateTime(), e.getEnd().toLocalDateTime(), time, duration));
+    }
+
+    public EventEntity getMeeting(List<EventEntity> events, LocalDateTime time, int duration){
+        Optional<EventEntity> first = events.stream().filter(e -> isInTimeslot(e.getStart().toLocalDateTime(), e.getEnd().toLocalDateTime(), time, duration)).findFirst();
+        return first.orElse(null);
     }
 
     @VisibleForTesting

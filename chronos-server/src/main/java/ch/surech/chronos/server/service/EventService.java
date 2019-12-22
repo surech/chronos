@@ -4,8 +4,7 @@ import ch.surech.chronos.server.entities.EventEntity;
 import ch.surech.chronos.server.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -25,5 +24,14 @@ public class EventService {
 
     private boolean containsUser(EventEntity event, UserEntity user) {
         return user.equals(event.getOrganizer()) || event.getAttendees().contains(user);
+    }
+
+    public Collection<UserEntity> getUsersWithEvents(){
+        Set<UserEntity> result = new HashSet<>();
+        for (EventEntity event : events) {
+            result.add(event.getOrganizer());
+            result.addAll(event.getAttendees());
+        }
+        return result;
     }
 }

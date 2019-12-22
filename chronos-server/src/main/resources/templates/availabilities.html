@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="availabilties" type="com.google.common.collect.Multimap<ch.surech.chronos.server.model.MeetingAttendee, ch.surech.chronos.server.model.AvailabilityInformations>"*/-->
+<head>
+    <meta charset="UTF-8">
+    <title>Meetimi: Availabilities</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h1>Meetimi: Availabilities</h1>
+<table>
+    <tr th:each="attendee : ${availabilties.keySet()}">
+        <td th:text="${attendee.user.email}"></td>
+        <td th:each="availability : ${availabilties.get(attendee)}" th:classappend="${availability.availability.name()}" th:title="${availability}"></td>
+    </tr>
+</table>
+</body>
+</html>
