@@ -48,6 +48,9 @@ public class FindMeetingService {
 
     public EventEntity search(MeetingRequest meetingRequest) {
         List<MeetingAttendee> attendees = loadAttendees(meetingRequest);
+        if (attendees == null || attendees.isEmpty()) {
+            throw new IllegalStateException("Attendees not found, event can't be created");
+        }
 
         SortedSet<EventProposal> availabilities = collectAvailabilities(attendees, meetingRequest.getStartRange().toLocalDateTime(), meetingRequest.getEndRange().toLocalDateTime(), meetingRequest.getDurationInMinutes(), timeslot);
 

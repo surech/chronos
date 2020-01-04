@@ -34,4 +34,12 @@ public class EventService {
         }
         return result;
     }
+
+    public EventEntity getLatestAddedEvent(){
+        if (events.isEmpty()) {
+            return null;
+        } else {
+            return events.get(events.size() - 1);
+        }
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,6 +58,14 @@ public class WebController {
 
         for (MeetingAttendee attendee : attendees) {
             for (LocalDateTime time = start; time.isBefore(end); time = time.plusMinutes(timeslot)) {
+                // Ignore Weedends and very early or very late times
+                if (time.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                        time.getDayOfWeek() == DayOfWeek.SUNDAY ||
+                        time.getHour() < 5 ||
+                        time.getHour() > 19) {
+                    continue;
+                }
+
                 // Add Metainformations
                 AvailabilityInformations.AvailabilityInformationsBuilder builder = AvailabilityInformations.builder();
                 builder.time(time);
@@ -76,6 +85,7 @@ public class WebController {
         }
 
         model.addAttribute("availabilties", availabilties);
+        model.addAttribute("latestAddedEvent", eventService.getLatestAddedEvent());
         return "availabilities";
     }
 }

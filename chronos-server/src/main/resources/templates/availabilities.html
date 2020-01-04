@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="availabilties" type="com.google.common.collect.Multimap<ch.surech.chronos.server.model.MeetingAttendee, ch.surech.chronos.server.model.AvailabilityInformations>"*/-->
+<!--/*@thymesVar id="latestAddedEvent" type="ch.surech.chronos.server.entities.EventEntity"*/-->
 <head>
     <meta charset="UTF-8">
     <title>Meetimi: Availabilities</title>
@@ -8,6 +9,13 @@
 </head>
 <body>
 <h1>Meetimi: Availabilities</h1>
+<p>
+<h3>Latest added event</h3>
+<dl th:if="${latestAddedEvent}">
+    <dt>Subject:</dt>
+    <dd th:text="${latestAddedEvent.subject}"></dd>
+</dl>
+<p th:unless="${latestAddedEvent}">No events saved</p>
 <table>
     <tr th:each="attendee : ${availabilties.keySet()}">
         <td th:text="${attendee.user.email}"></td>
