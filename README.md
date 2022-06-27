@@ -11,7 +11,7 @@ Auch für die eingeladenen Personen ist die heutige Situation unbefriedigend:
 
 Kurz: Heutige Kalendersysteme erzeugen viel Aufwand und behindern konzentriertes arbeiten.
 
-##Wie hilft hier Chronos?
+## Wie hilft hier Chronos?
 Chronos übernimmt die Organisation und Buchung von Terminen für die ganze Organisation. Es sorgt dafür, das sowohl die Bedürfnisse der einzelnen Teilnehmenden als auch des Organisators berücksichtigt werden. Durch eine gesamtheitliche Betrachung aller Kalender kann für jeden einzelnen Termin die optimale Lösung gefunden werden. Mühsame Terminfindungen und -Konflikte gehören damit der Vergangenheit an. Zudem bekommt jede Person mehr Zeit zum konzentrierten Arbeiten.
 
 Jeder Mitarbeitende erfasst in Chronos seine persönlichen Präferenzen:
