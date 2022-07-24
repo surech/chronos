@@ -9,11 +9,13 @@ import ch.surech.chronos.server.mapper.UserPrecentePreferenceMapper;
 import ch.surech.chronos.server.repo.UserPrecentePreferenceRepository;
 import ch.surech.chronos.server.repo.UserRepository;
 import ch.surech.chronos.server.rest.exceptions.NotFoundException;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/user")
@@ -40,6 +42,12 @@ public class UserRestController {
         UserEntity savedEntity = userRepository.save(userEntity);
 
         return userMapper.fromEntity(savedEntity);
+    }
+
+    @GetMapping(path = "/")
+    public List<User> findAllUsers(){
+        Iterable<UserEntity> allUsers = userRepository.findAll();
+        return StreamSupport.stream(allUsers.spliterator(), false).map(userMapper::fromEntity).collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{email}")
