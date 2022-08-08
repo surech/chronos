@@ -1,0 +1,8 @@
+microsoft:
+  graph:
+    auth:
+      clientId: secret
+      clientSecret: secret
+      authorityHost: secret
+      tenantId: secret
+      scopes: User.Read
