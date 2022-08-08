@@ -4,7 +4,12 @@ import com.azure.identity.ClientSecretCredential;
 import com.azure.identity.ClientSecretCredentialBuilder;
 import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
 import com.microsoft.graph.models.User;
+import com.microsoft.graph.options.QueryOption;
+import com.microsoft.graph.requests.EventCollectionPage;
 import com.microsoft.graph.requests.GraphServiceClient;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +37,11 @@ public class AuthentificationService {
     private String[] appScopes;
 
     public void makeConnection(){
-        this.LOGGER.info("ClientID: {}", clientId);
-        this.LOGGER.info("Client Secret: {}", clientSecret);
-        this.LOGGER.info("Authority Host: {}", authorityHost);
-        this.LOGGER.info("Tenant ID: {}", tenantId);
-        this.LOGGER.info("Scopes: {}", appScopes);
+        LOGGER.info("ClientID: {}", clientId);
+        LOGGER.info("Client Secret: {}", clientSecret);
+        LOGGER.info("Authority Host: {}", authorityHost);
+        LOGGER.info("Tenant ID: {}", tenantId);
+        LOGGER.info("Scopes: {}", appScopes);
 
         final ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
             .clientId(clientId)
@@ -53,7 +58,7 @@ public class AuthentificationService {
                 .authenticationProvider(tokenCredentialAuthProvider)
                 .buildClient();
 
-        final User me = graphClient.me().buildRequest().get();
+        User me = graphClient.users("stefan.urech@sbb.ch").buildRequest().get();
         LOGGER.info(me.displayName);
     }
 }
