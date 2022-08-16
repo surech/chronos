@@ -24,6 +24,7 @@ public class ChronosAnalyserApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		LOGGER.info("Start...");
-		authentificationService.makeConnection();
+		authentificationService.signIn();
+		LOGGER.info("Token: " + authentificationService.getAccessToken());
 	}
 }
