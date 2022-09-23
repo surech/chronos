@@ -20,6 +20,7 @@
         <module>chronos-server</module>
         <module>chronos-api</module>
         <module>chronos-analyser</module>
+        <module>chronos-leecher</module>
     </modules>
 
 </project>

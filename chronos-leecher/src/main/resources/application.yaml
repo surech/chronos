@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    default: h2
+microsoft:
+  graph:
+    auth:
+      clientId: secret
+      clientSecret: secret
+      authorityHost: secret
+      tenantId: secret
+      scopes: User.Read
