@@ -21,6 +21,7 @@
         <module>chronos-api</module>
         <module>chronos-analyser</module>
         <module>chronos-leecher</module>
+        <module>chronos-analyser-persistence</module>
     </modules>
 
 </project>

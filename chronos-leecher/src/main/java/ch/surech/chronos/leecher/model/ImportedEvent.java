@@ -56,7 +56,7 @@ public class ImportedEvent {
     @Column(name = "start", columnDefinition = "TIMESTAMP")
     private ZonedDateTime start;
 
-    @Column(name = "end", columnDefinition = "TIMESTAMP")
+    @Column(name = "\"end\"", columnDefinition = "TIMESTAMP")
     private ZonedDateTime end;
 
     @Column(name = "location_name")

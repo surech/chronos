@@ -9,3 +9,16 @@ microsoft:
       authorityHost: secret
       tenantId: secret
       scopes: User.Read
+
+hibernate:
+  globally_quoted_identifiers: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL=DEBUG:
+        type:
+          descriptor:
+            sql:
+              BasicBinder=TRACE:
