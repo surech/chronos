@@ -1,6 +1,6 @@
 package ch.surech.chronos.leecher.service;
 
-import ch.surech.chronos.leecher.model.GroupMembers;
+import ch.surech.chronos.analyser.persistence.model.GroupMembers;
 import com.microsoft.graph.models.DirectoryObject;
 import com.microsoft.graph.models.Group;
 import com.microsoft.graph.models.User;

@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 
-public class DateTimeTimeZoneMapper {
+public final class DateTimeTimeZoneMapper {
 
     private DateTimeTimeZoneMapper() {
     }

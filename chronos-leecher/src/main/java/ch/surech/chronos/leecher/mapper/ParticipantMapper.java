@@ -1,6 +1,6 @@
 package ch.surech.chronos.leecher.mapper;
 
-import ch.surech.chronos.leecher.model.Participant;
+import ch.surech.chronos.analyser.persistence.model.Participant;
 import com.microsoft.graph.models.Attendee;
 import com.microsoft.graph.models.Recipient;
 

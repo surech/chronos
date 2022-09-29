@@ -1,4 +1,4 @@
-package ch.surech.chronos.leecher.model;
+package ch.surech.chronos.analyser.persistence.model;
 
 import com.microsoft.graph.models.Group;
 import com.microsoft.graph.models.User;

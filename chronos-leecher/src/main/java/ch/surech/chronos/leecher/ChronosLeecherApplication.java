@@ -1,20 +1,15 @@
 package ch.surech.chronos.leecher;
 
+import ch.surech.chronos.analyser.persistence.model.GroupMembers;
 import ch.surech.chronos.leecher.mapper.DateTimeTimeZoneMapper;
-import ch.surech.chronos.leecher.model.GroupMembers;
 import ch.surech.chronos.leecher.service.AuthentificationService;
 import ch.surech.chronos.leecher.service.CalendarService;
-import ch.surech.chronos.leecher.service.GraphService;
 import ch.surech.chronos.leecher.service.GroupService;
 import ch.surech.chronos.leecher.service.ImportService;
-import ch.surech.chronos.leecher.service.ImportedEventService;
 import ch.surech.chronos.leecher.service.UserService;
-import com.microsoft.graph.models.DirectoryObject;
 import com.microsoft.graph.models.Event;
 import com.microsoft.graph.models.Group;
 import com.microsoft.graph.models.User;
-import com.microsoft.graph.requests.GraphServiceClient;
-import com.microsoft.graph.requests.UserRequestBuilder;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -25,8 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = {"ch.surech.chronos.analyser.persistence.repo"})
+@EntityScan(basePackages = {"ch.surech.chronos.analyser.persistence.model"})
 public class ChronosLeecherApplication implements CommandLineRunner {
 
     private final static Logger LOGGER = LoggerFactory

@@ -1,9 +1,9 @@
 package ch.surech.chronos.leecher.service;
 
-import ch.surech.chronos.leecher.model.ImportedEvent;
-import ch.surech.chronos.leecher.model.Participant;
-import ch.surech.chronos.leecher.repo.ImportedEventRepository;
-import ch.surech.chronos.leecher.repo.ParticipantRepository;
+import ch.surech.chronos.analyser.persistence.model.ImportedEvent;
+import ch.surech.chronos.analyser.persistence.model.Participant;
+import ch.surech.chronos.analyser.persistence.repo.ImportedEventRepository;
+import ch.surech.chronos.analyser.persistence.repo.ParticipantRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

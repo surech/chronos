@@ -1,6 +1,6 @@
 package ch.surech.chronos.leecher.mapper;
 
-import ch.surech.chronos.leecher.model.ImportedEvent;
+import ch.surech.chronos.analyser.persistence.model.ImportedEvent;
 import com.microsoft.graph.models.Event;
 import java.time.ZonedDateTime;
 

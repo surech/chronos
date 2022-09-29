@@ -1,4 +1,4 @@
-package ch.surech.chronos.leecher.model;
+package ch.surech.chronos.analyser.persistence.model;
 
 import com.microsoft.graph.models.AttendeeType;
 import com.microsoft.graph.models.ResponseType;

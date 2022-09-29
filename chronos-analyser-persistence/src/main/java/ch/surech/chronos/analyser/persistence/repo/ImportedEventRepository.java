@@ -1,6 +1,6 @@
-package ch.surech.chronos.leecher.repo;
+package ch.surech.chronos.analyser.persistence.repo;
 
-import ch.surech.chronos.leecher.model.ImportedEvent;
+import ch.surech.chronos.analyser.persistence.model.ImportedEvent;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

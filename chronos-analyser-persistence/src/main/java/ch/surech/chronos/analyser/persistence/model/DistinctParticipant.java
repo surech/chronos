@@ -1,4 +1,4 @@
-package ch.surech.chronos.leecher.model;
+package ch.surech.chronos.analyser.persistence.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
