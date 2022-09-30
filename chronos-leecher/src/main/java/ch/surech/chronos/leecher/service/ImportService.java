@@ -14,18 +14,11 @@ import org.springframework.stereotype.Service;
 public class ImportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportService.class);
 
-//    @Value("#{'${import.accounts}'.split(',')}")
-//    private List<String> users;
-
     @Autowired
     private CalendarService calendarService;
 
     @Autowired
     private ImportedEventService importedEventService;
-
-//    public void runImport(){
-//        this.runImport(users);
-//    }
 
     public void runImport(List<String> importUsers){
         for (String user : importUsers) {

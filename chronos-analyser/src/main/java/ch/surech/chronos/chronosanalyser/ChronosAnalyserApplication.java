@@ -1,7 +1,7 @@
 package ch.surech.chronos.chronosanalyser;
 
 import ch.surech.chronos.analyser.persistence.model.DistinctParticipant;
-import ch.surech.chronos.chronosanalyser.service.UserService;
+import ch.surech.chronos.chronosanalyser.service.ParticipantService;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ChronosAnalyserApplication implements CommandLineRunner {
 
 	@Autowired
-	private UserService userService;
+	private ParticipantService userService;
 
 	private final static Logger LOGGER = LoggerFactory
 		.getLogger(ChronosAnalyserApplication.class);
