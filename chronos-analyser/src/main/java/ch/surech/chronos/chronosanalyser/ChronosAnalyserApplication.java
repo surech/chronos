@@ -31,7 +31,8 @@ public class ChronosAnalyserApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		List<DistinctParticipant> allUsers = userService.getAllUsers();
 		for (int i = 0; i < allUsers.size(); i++) {
-			LOGGER.info("[{}] {}", i, allUsers.get(i).getName());
+			DistinctParticipant user = allUsers.get(i);
+			LOGGER.info("[{}] {} [{}]", i, user.getName(), user.getAddress());
 		}
 	}
 }

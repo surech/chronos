@@ -10,6 +10,7 @@ import ch.surech.chronos.leecher.service.UserService;
 import com.microsoft.graph.models.Event;
 import com.microsoft.graph.models.Group;
 import com.microsoft.graph.models.User;
+import com.microsoft.graph.models.UserSettings;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -59,7 +60,9 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
 //        this.getUserInGroup();
 
-        this.showAllInGroup();
+//        this.showAllInGroup();
+
+        this.showUserSetting();
 
 //        showEventsForOneUser();
 
@@ -73,8 +76,9 @@ public class ChronosLeecherApplication implements CommandLineRunner {
     }
 
     private void showUser() {
-        User user = userService.getUser("stefan.urech@sbb.ch");
-        LOGGER.info("User: " + user.displayName);
+//        User user = userService.getUser("stefan.urech@sbb.ch");
+        User user = userService.getUser("claude.baumann@sbb.ch");
+        LOGGER.info("User: [{}] {}", user.id, user.displayName);
     }
 
     private void importEventsInDatabase() {
@@ -96,6 +100,13 @@ public class ChronosLeecherApplication implements CommandLineRunner {
             ZonedDateTime start = DateTimeTimeZoneMapper.toZonedDateTime(event.start);
             LOGGER.info("[{}] {}: {}", i, start.format(DateTimeFormatter.ISO_LOCAL_DATE), event.subject);
         }
+    }
+
+    private void showUserSetting(){
+//        User user = userService.getUser("claude.baumann@sbb.ch");
+        User user = userService.getUser("stefan.urech@sbb.ch");
+        UserSettings mailboxSettings = userService.getMailboxSettings(user);
+        LOGGER.info(mailboxSettings.id);
     }
 
     private void getUserInGroup(){

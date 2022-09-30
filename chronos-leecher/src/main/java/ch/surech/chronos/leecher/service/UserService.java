@@ -1,6 +1,7 @@
 package ch.surech.chronos.leecher.service;
 
 import com.microsoft.graph.models.User;
+import com.microsoft.graph.models.UserSettings;
 import com.microsoft.graph.requests.GraphServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,12 @@ public class UserService {
         GraphServiceClient graphClient = graphService.getGraphClient();
 
         return graphClient.users(principalName).buildRequest().get();
+    }
+
+    public UserSettings getMailboxSettings(User user){
+        GraphServiceClient graphClient = graphService.getGraphClient();
+
+        UserSettings userSettings = graphClient.users(user.id).settings().buildRequest().get();
+        return userSettings;
     }
 }
