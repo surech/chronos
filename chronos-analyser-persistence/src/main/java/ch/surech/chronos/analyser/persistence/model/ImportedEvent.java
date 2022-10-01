@@ -4,6 +4,8 @@ import com.microsoft.graph.models.EventType;
 import com.microsoft.graph.models.FreeBusyStatus;
 import com.microsoft.graph.models.Importance;
 import com.microsoft.graph.models.LocationType;
+
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -33,7 +35,7 @@ import lombok.Singular;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportedEvent {
+public class ImportedEvent implements TimeRange {
 
     @Id
     @Column(name = "id")
@@ -54,10 +56,10 @@ public class ImportedEvent {
     private Importance importance;
 
     @Column(name = "start", columnDefinition = "TIMESTAMP")
-    private ZonedDateTime start;
+    private LocalDateTime start;
 
     @Column(name = "\"end\"", columnDefinition = "TIMESTAMP")
-    private ZonedDateTime end;
+    private LocalDateTime end;
 
     @Column(name = "location_name")
     private String locationName;

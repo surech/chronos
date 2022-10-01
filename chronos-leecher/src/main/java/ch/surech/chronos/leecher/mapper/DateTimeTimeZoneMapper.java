@@ -11,13 +11,12 @@ public final class DateTimeTimeZoneMapper {
     private DateTimeTimeZoneMapper() {
     }
 
-    public static ZonedDateTime toZonedDateTime(DateTimeTimeZone dateTimeTimeZone) {
-        LocalDateTime dateTime = LocalDateTime.parse(dateTimeTimeZone.dateTime);
-        ZonedDateTime result = ZonedDateTime.of(dateTime, ZoneId.of(dateTimeTimeZone.timeZone));
+    public static LocalDateTime toZonedDateTime(DateTimeTimeZone dateTimeTimeZone) {
+        LocalDateTime result = LocalDateTime.parse(dateTimeTimeZone.dateTime);
         return result;
     }
 
-    public static ZonedDateTime toZonedDateTime(Calendar createdDateTime) {
-        return ZonedDateTime.ofInstant(createdDateTime.toInstant(), ZoneId.of("UTC"));
+    public static LocalDateTime toZonedDateTime(Calendar createdDateTime) {
+        return LocalDateTime.ofInstant(createdDateTime.toInstant(), ZoneId.systemDefault());
     }
 }

@@ -11,6 +11,8 @@ import com.microsoft.graph.models.Event;
 import com.microsoft.graph.models.Group;
 import com.microsoft.graph.models.User;
 import com.microsoft.graph.models.UserSettings;
+
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -66,7 +68,7 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
 //        showEventsForOneUser();
 
-//        importEventsInDatabase();
+        importEventsInDatabase();
     }
 
     private void signIn() {
@@ -97,7 +99,7 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
         for (int i = 0; i < events.size(); i++) {
             Event event = events.get(i);
-            ZonedDateTime start = DateTimeTimeZoneMapper.toZonedDateTime(event.start);
+            LocalDateTime start = DateTimeTimeZoneMapper.toZonedDateTime(event.start);
             LOGGER.info("[{}] {}: {}", i, start.format(DateTimeFormatter.ISO_LOCAL_DATE), event.subject);
         }
     }
