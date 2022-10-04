@@ -4,9 +4,12 @@ import ch.surech.chronos.analyser.persistence.model.TimeRange;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CalendarStateService {
 
     private static final LocalTime LUNCH_START = LocalTime.of(12, 0);
@@ -20,7 +23,7 @@ public class CalendarStateService {
 
     }
 
-    public List<Duration> getFreeTime(List<TimeRange> calendar, LocalDate date) {
+    public List<Duration> getFreeTime(Collection<? extends TimeRange> calendar, LocalDate date) {
         // create a copy of the list, because we have to work with it
         List<TimeRange> events = new ArrayList<>(calendar);
 

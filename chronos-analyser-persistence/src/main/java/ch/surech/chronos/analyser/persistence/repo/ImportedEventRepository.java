@@ -20,4 +20,7 @@ public interface ImportedEventRepository extends CrudRepository<ImportedEvent, L
 
     @Query("SELECT DISTINCT e FROM ImportedEvent e WHERE e.organizer = :organizer")
     List<ImportedEvent> getAll(@Param("organizer") Participant user);
+
+    @Query("SELECT DISTINCT e FROM ImportedEvent e INNER JOIN FETCH e.attendees a WHERE e.organizer.address = :organizer OR a.address = :organizer")
+    List<ImportedEvent> getCalendarFromUser(@Param("organizer") String email);
 }

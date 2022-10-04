@@ -1,6 +1,7 @@
 package ch.surech.chronos.chronosanalyser;
 
 import ch.surech.chronos.analyser.persistence.model.DistinctParticipant;
+import ch.surech.chronos.chronosanalyser.service.AnalyseFreeTimeService;
 import ch.surech.chronos.chronosanalyser.service.ParticipantService;
 import java.util.List;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ChronosAnalyserApplication implements CommandLineRunner {
 
 	@Autowired
-	private ParticipantService userService;
+	private AnalyseFreeTimeService analyseFreeTimeService;
 
 	private final static Logger LOGGER = LoggerFactory
 		.getLogger(ChronosAnalyserApplication.class);
@@ -29,10 +30,6 @@ public class ChronosAnalyserApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		List<DistinctParticipant> allUsers = userService.getAllUsers();
-		for (int i = 0; i < allUsers.size(); i++) {
-			DistinctParticipant user = allUsers.get(i);
-			LOGGER.info("[{}] {} [{}]", i, user.getName(), user.getAddress());
-		}
+		analyseFreeTimeService.analyse();
 	}
 }
