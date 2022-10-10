@@ -12,8 +12,14 @@ public final class DateTimeTimeZoneMapper {
     }
 
     public static LocalDateTime toZonedDateTime(DateTimeTimeZone dateTimeTimeZone) {
+        // Parse date and time
         LocalDateTime result = LocalDateTime.parse(dateTimeTimeZone.dateTime);
-        return result;
+
+        // Apply the zone information
+        ZonedDateTime zonedDateTime = result.atZone(ZoneId.of(dateTimeTimeZone.timeZone));
+
+        // Convert to our timezone
+        return zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public static LocalDateTime toZonedDateTime(Calendar createdDateTime) {

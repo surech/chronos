@@ -10,4 +10,7 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
     @Query("SELECT p.graphId FROM Person p")
     List<String> getAllGraphIds();
+
+    @Query("SELECT p.userPrincipalName FROM Person p")
+    List<String> getAllUserPrincialNames();
 }

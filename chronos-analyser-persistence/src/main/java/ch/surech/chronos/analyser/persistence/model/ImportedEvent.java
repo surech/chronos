@@ -35,7 +35,7 @@ import lombok.Singular;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportedEvent implements TimeRange {
+public class ImportedEvent extends TimeRange {
 
     @Id
     @Column(name = "id")

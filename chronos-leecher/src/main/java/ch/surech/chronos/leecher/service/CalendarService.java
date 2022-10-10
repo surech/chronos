@@ -7,7 +7,10 @@ import com.microsoft.graph.options.QueryOption;
 import com.microsoft.graph.requests.EventCollectionPage;
 import com.microsoft.graph.requests.EventCollectionRequest;
 import com.microsoft.graph.requests.GraphServiceClient;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -32,8 +35,8 @@ public class CalendarService {
     public List<Event> getEventsFromCalendar(String userId){
         GraphServiceClient graphClient = graphService.getGraphClient();
 
-        LocalDateTime start = LocalDateTime.now().minusWeeks(2);
-        LocalDateTime end = LocalDateTime.now().plusWeeks(2);
+        LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).minusWeeks(2);
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).plusWeeks(2);
 
         String startString = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start);
         String endString = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(end);

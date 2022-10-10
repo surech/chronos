@@ -1,11 +1,16 @@
 package ch.surech.chronos.analyser.persistence.model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-public interface TimeRange {
+public abstract class TimeRange {
 
-    public LocalDateTime getStart();
+    public abstract LocalDateTime getStart();
 
-    public LocalDateTime getEnd();
+    public abstract LocalDateTime getEnd();
+
+    public Duration getDuration(){
+        return Duration.between(getStart(), getEnd());
+    }
 }

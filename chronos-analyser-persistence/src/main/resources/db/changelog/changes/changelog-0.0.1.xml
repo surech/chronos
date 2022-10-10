@@ -129,4 +129,61 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="7" author="surech">
+        <createTable tableName="freetime_day">
+            <column name="ID" type="BIGINT" autoIncrement="true" remarks="Technischer Primärschlüssel">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="person_fk" type="BIGINT">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="freetime_in_minutes" type="int">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="usefulness" type="double">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="usefulness_optimal" type="double">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="potential" type="double">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="freetime_day" baseColumnNames="person_fk"
+                                 constraintName="freetime_day_user"
+                                 referencedTableName="person"
+                                 referencedColumnNames="ID"/>
+
+        <createTable tableName="freetime_slot">
+            <column name="ID" type="BIGINT" autoIncrement="true" remarks="Technischer Primärschlüssel">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="day_fk" type="BIGINT">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="start" type="DATETIME">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="end" type="DATETIME">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="duration_in_minutes" type="int">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="usefulness" type="double">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="freetime_slot" baseColumnNames="day_fk"
+                                 constraintName="freetime_slot_day"
+                                 referencedTableName="freetime_day"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
+
 </databaseChangeLog>

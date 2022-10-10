@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @AllArgsConstructor
-public class SimpleTimeRange implements TimeRange {
+public class SimpleTimeRange extends TimeRange {
     private final LocalDateTime start;
     private final LocalDateTime end;
 }
