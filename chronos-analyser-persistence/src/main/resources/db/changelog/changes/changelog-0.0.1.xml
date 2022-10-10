@@ -103,4 +103,30 @@
         <modifyDataType tableName="importedevent" columnName="icaluid" newDataType="varchar(400)"/>
     </changeSet>
 
+    <changeSet id="6" author="surech">
+        <createTable tableName="person">
+            <column name="ID" type="BIGINT" autoIncrement="true" remarks="Technischer Primärschlüssel">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="graph_id" type="VARCHAR(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="surname" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="given_name" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="mail" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="user_principal_name" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

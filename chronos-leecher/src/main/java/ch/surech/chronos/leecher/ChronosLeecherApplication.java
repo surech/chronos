@@ -64,7 +64,7 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
 //        this.showAllInGroup();
 
-        this.showUserSetting();
+//        this.showUserSetting();
 
 //        showEventsForOneUser();
 
