@@ -35,4 +35,7 @@ public class Person {
 
     @Column(name = "user_principal_name")
     private String userPrincipalName;
+
+    @Column(name = "organisation")
+    private String organisation;
 }

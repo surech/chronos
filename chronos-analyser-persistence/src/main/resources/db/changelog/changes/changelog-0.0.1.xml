@@ -185,5 +185,12 @@
                                  referencedTableName="freetime_day"
                                  referencedColumnNames="ID"/>
     </changeSet>
+    <changeSet id="8" author="surech">
+        <addColumn tableName="person">
+            <column name="organisation" type="VARCHAR(200)">
+                <constraints nullable="true" unique="false"></constraints>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

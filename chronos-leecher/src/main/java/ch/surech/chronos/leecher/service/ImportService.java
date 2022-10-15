@@ -31,6 +31,10 @@ public class ImportService {
     private PersonService personService;
 
     public void runImport(List<String> importUsers){
+        runImport(importUsers, 0);
+    }
+
+    public void runImport(List<String> importUsers, int timeout){
         for (String userId : importUsers) {
             LOGGER.info("Importing Calendar for User {}", userId);
             List<Event> events = null;
@@ -38,9 +42,16 @@ public class ImportService {
             try {
                 // Get User and save it
                 User user = userService.getUser(userId);
-
                 Person person = PersonMapper.toModel(user);
-                personService.save(person);
+                person.setOrganisation(personService.extractOrganisationFromName(user.displayName));
+
+                // If user allready exists, then we go to the next one
+                if(personService.exists(person)){
+                    LOGGER.info("Person {} allready exists. Ignoring...", person.getUserPrincipalName());
+                    continue;
+                } else {
+                    personService.save(person);
+                }
             } catch (GraphServiceException e){
                 LOGGER.warn("Error loading user {} from Graph", userId);
                 continue;
@@ -62,6 +73,16 @@ public class ImportService {
             }
 
             events.stream().map(ImportedEventMapper::toModel).forEach(importedEventService::save);
+
+            // Sleep a littlebit, if desired
+            if(timeout > 0){
+                try {
+                    LOGGER.info("Sleep for {} ms...", timeout);
+                    Thread.sleep(timeout);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,17 +59,20 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
         signIn();
 
-        showUser();
+//        showUser();
 
 //        this.getUserInGroup();
 
-//        this.showAllInGroup();
+        this.showAllInGroup();
+
 
 //        this.showUserSetting();
 
 //        showEventsForOneUser();
 
-        importEventsInDatabase();
+//        importEventsInDatabase();
+
+//        importEventsFromGroup();
     }
 
     private void signIn() {
@@ -150,5 +154,18 @@ public class ChronosLeecherApplication implements CommandLineRunner {
         for (int i = 0; i < users.size(); i++) {
             LOGGER.info("[{}] {}", i, users.get(i).displayName);
         }
+    }
+
+    private void importEventsFromGroup(){
+        // Load User, which is a group
+        String groupName = "DL TIMO-Factory";
+        List<Group> groups = groupService.searchGroupByDisplayName(groupName);
+
+        // Load all users in this group
+        List<User> users = groupService.getAllUsersInGroup(groups.get(0));
+        List<String> principals = users.stream().map(u -> u.userPrincipalName).collect(Collectors.toList());
+
+        LOGGER.info("Start importing calendar of {} users", users.size());
+        importService.runImport(principals, 2000);
     }
 }
