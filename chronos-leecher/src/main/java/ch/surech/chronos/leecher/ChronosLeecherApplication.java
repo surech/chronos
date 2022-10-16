@@ -63,8 +63,7 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
 //        this.getUserInGroup();
 
-        this.showAllInGroup();
-
+//        this.showAllInGroup();
 
 //        this.showUserSetting();
 
@@ -72,7 +71,7 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
 //        importEventsInDatabase();
 
-//        importEventsFromGroup();
+        importEventsFromGroup();
     }
 
     private void signIn() {
@@ -166,6 +165,6 @@ public class ChronosLeecherApplication implements CommandLineRunner {
         List<String> principals = users.stream().map(u -> u.userPrincipalName).collect(Collectors.toList());
 
         LOGGER.info("Start importing calendar of {} users", users.size());
-        importService.runImport(principals, 2000);
+        importService.runImport(principals);
     }
 }
