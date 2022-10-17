@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 @Table(name = "importedevent")
@@ -104,4 +105,27 @@ public class ImportedEvent extends TimeRange {
     @OneToMany(mappedBy = "event")
     @Singular
     private List<Participant> attendees;
+
+    public void setSubject(String subject) {
+        this.subject = StringUtils.substring(subject, 0, 200);
+    }
+
+    public void setBodyPreview(String bodyPreview) {
+        this.bodyPreview = StringUtils.substring(bodyPreview, 0, 200);
+    }
+
+    public static class ImportedEventBuilder{
+        private String subject;
+        private String bodyPreview;
+
+        public ImportedEventBuilder subject(String subject){
+            this.subject = StringUtils.substring(subject, 0, 200);
+            return this;
+        }
+
+        public ImportedEventBuilder bodyPreview(String bodyPreview){
+            this.bodyPreview = StringUtils.substring(bodyPreview, 0, 200);
+            return this;
+        }
+    }
 }

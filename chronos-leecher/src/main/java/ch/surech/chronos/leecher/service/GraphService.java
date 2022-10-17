@@ -2,7 +2,10 @@ package ch.surech.chronos.leecher.service;
 
 import com.microsoft.graph.httpcore.HttpClients;
 import com.microsoft.graph.requests.GraphServiceClient;
-import io.github.bucket4j.*;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,9 @@ public class GraphService {
         if(graphClient == null){
             // Build graph client
             PresetTokenAuthenticationProvider tokenProvider = new PresetTokenAuthenticationProvider(authentificationService.getAccessToken());
-            OkHttpClient httpClient = HttpClients.createDefault(tokenProvider).newBuilder().addInterceptor(rateLimitInterceptor).build();
+
+            OkHttpClient httpClient = HttpClients.createDefault(tokenProvider).newBuilder().addInterceptor(rateLimitInterceptor).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).build();
+
             this.graphClient = GraphServiceClient.builder().authenticationProvider(tokenProvider).httpClient(httpClient).buildClient();
         }
 

@@ -13,7 +13,7 @@ import java.net.SocketTimeoutException;
 public class RateLimitInterceptor implements Interceptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(RateLimitInterceptor.class);
 
-    private static final int DEFAULT_RETRIES = 3;
+    private static final int DEFAULT_RETRIES = 5;
 
     private final Bucket bucket;
 

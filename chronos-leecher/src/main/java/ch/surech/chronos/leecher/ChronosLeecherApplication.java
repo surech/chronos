@@ -88,7 +88,8 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
     private void importEventsInDatabase() {
         LOGGER.info("Run import...");
-        importService.runImport(List.of("stefan.urech@sbb.ch"));
+        User user = userService.getUser("stefan.urech@sbb.ch");
+        importService.runImport(List.of(user));
         LOGGER.info("Import complete...");
     }
 
@@ -162,9 +163,8 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
         // Load all users in this group
         List<User> users = groupService.getAllUsersInGroup(groups.get(0));
-        List<String> principals = users.stream().map(u -> u.userPrincipalName).collect(Collectors.toList());
 
         LOGGER.info("Start importing calendar of {} users", users.size());
-        importService.runImport(principals);
+        importService.runImport(users);
     }
 }

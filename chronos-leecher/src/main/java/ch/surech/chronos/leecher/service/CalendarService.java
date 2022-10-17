@@ -33,10 +33,14 @@ public class CalendarService {
     }
 
     public List<Event> getEventsFromCalendar(String userId){
-        GraphServiceClient graphClient = graphService.getGraphClient();
-
         LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).minusWeeks(2);
         LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).plusWeeks(2);
+
+        return getEventsFromCalendar(userId, start, end);
+    }
+
+    public List<Event> getEventsFromCalendar(String userId, LocalDateTime start, LocalDateTime end){
+        GraphServiceClient graphClient = graphService.getGraphClient();
 
         String startString = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start);
         String endString = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(end);
