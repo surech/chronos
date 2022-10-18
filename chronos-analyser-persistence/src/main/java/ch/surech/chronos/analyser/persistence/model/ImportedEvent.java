@@ -114,9 +114,27 @@ public class ImportedEvent extends TimeRange {
         this.bodyPreview = StringUtils.substring(bodyPreview, 0, 200);
     }
 
+    public void setLocationName(String locationName) {
+        this.locationName = StringUtils.substring(locationName, 0, 200);
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = StringUtils.substring(locationId, 0, 200);
+    }
+
+    public void setLocationUri(String locationUri) {
+        this.locationUri = locationUri;
+    }
+
     public static class ImportedEventBuilder{
         private String subject;
         private String bodyPreview;
+
+        private String locationName;
+
+        private String locationId;
+
+        private String locationUri;
 
         public ImportedEventBuilder subject(String subject){
             this.subject = StringUtils.substring(subject, 0, 200);
@@ -125,6 +143,21 @@ public class ImportedEvent extends TimeRange {
 
         public ImportedEventBuilder bodyPreview(String bodyPreview){
             this.bodyPreview = StringUtils.substring(bodyPreview, 0, 200);
+            return this;
+        }
+
+        public ImportedEventBuilder locationName(String locationName){
+            this.locationName = StringUtils.substring(locationName, 0, 200);
+            return this;
+        }
+
+        public ImportedEventBuilder locationId(String locationId){
+            this.locationId = StringUtils.substring(locationId, 0, 200);
+            return this;
+        }
+
+        public ImportedEventBuilder locationUri(String locationUri){
+            this.locationUri = StringUtils.substring(locationUri, 0, 200);
             return this;
         }
     }

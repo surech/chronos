@@ -141,7 +141,8 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
     private void showAllInGroup(){
         // Load User, which is a group
-        String groupName = "DL TIMO-Factory";
+//        String groupName = "DSO (Intern)";
+        String groupName = "DSO (Extern)";
         List<Group> groups = groupService.searchGroupByDisplayName(groupName);
 
         // We expect exacly one group
@@ -158,11 +159,13 @@ public class ChronosLeecherApplication implements CommandLineRunner {
 
     private void importEventsFromGroup(){
         // Load User, which is a group
-        String groupName = "DL TIMO-Factory";
+//        String groupName = "DL TIMO-Factory";
+        String groupName = "DSO (Intern)";
         List<Group> groups = groupService.searchGroupByDisplayName(groupName);
+        groups.addAll(groupService.searchGroupByDisplayName("DSO (Intern)"));
 
         // Load all users in this group
-        List<User> users = groupService.getAllUsersInGroup(groups.get(0));
+        List<User> users = groupService.getAllUsersInGroups(groups);
 
         LOGGER.info("Start importing calendar of {} users", users.size());
         importService.runImport(users);

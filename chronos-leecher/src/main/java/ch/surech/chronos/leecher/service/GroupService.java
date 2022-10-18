@@ -60,6 +60,13 @@ public class GroupService {
         return groupMembers;
     }
 
+    public List<User> getAllUsersInGroups(List<Group> groups){
+        List<User> result = new ArrayList<>();
+        for (Group group : groups) {
+            result.addAll(getAllUsersInGroup(group));
+        }
+        return result;
+    }
     public List<User> getAllUsersInGroup(Group group){
         return getAllUsersInGroup(group, new HashSet<>());
     }

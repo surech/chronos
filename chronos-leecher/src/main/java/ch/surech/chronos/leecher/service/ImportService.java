@@ -33,7 +33,7 @@ public class ImportService {
     @Autowired
     private PersonService personService;
 
-    private final static LocalDateTime IMPORT_START = LocalDateTime.of(2022, Month.AUGUST, 2, 0, 0, 0, 0);
+    private final static LocalDateTime IMPORT_START = LocalDateTime.of(2022, Month.AUGUST, 22, 0, 0, 0, 0);
     private final static LocalDateTime IMPORT_END = LocalDateTime.of(2022, Month.SEPTEMBER, 18, 23, 59, 59, 0);
 
     public void runImport(List<User> users) {

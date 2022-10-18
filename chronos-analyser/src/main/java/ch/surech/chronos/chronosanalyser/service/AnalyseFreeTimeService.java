@@ -15,6 +15,9 @@ import com.google.common.collect.TreeMultimap;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +32,9 @@ import org.springframework.stereotype.Service;
 public class AnalyseFreeTimeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyseFreeTimeService.class);
+
+    private final static LocalDate IMPORT_START = LocalDate.of(2022, Month.AUGUST, 22);
+    private final static LocalDate IMPORT_END = LocalDate.of(2022, Month.SEPTEMBER, 18);
 
     @Autowired
     private ImportedEventRepository importedEventRepository;
@@ -57,7 +63,9 @@ public class AnalyseFreeTimeService {
             // Group Events by Date
             Multimap<LocalDate, ImportedEvent> groupedEvents = groupAndSort(events);
 
-            for (LocalDate day : groupedEvents.keySet()) {
+            // Iterate over every day
+            List<LocalDate> dateRange = this.generateDateList(IMPORT_START, IMPORT_END);
+            for (LocalDate day : dateRange) {
                 // Ignore Weekends
                 DayOfWeek dayOfWeek = day.getDayOfWeek();
                 if(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY){
@@ -122,5 +130,17 @@ public class AnalyseFreeTimeService {
 
     private Iterable<Person> loadUsers() {
         return personRepository.findAll();
+    }
+
+    @VisibleForTesting
+    protected List<LocalDate> generateDateList(LocalDate start, LocalDate end){
+        List<LocalDate> result = new ArrayList<>();
+        LocalDate current = start;
+        while(current.isBefore(end)){
+            result.add(current);
+            current = current.plusDays(1);
+        }
+        result.add(end);
+        return result;
     }
 }
